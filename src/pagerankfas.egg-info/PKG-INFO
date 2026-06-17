@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: pagerankfas
+Version: 0.1.0
+Summary: A modular implementation of PageRankFAS with ML enhancements
+Author-email: Georgios Papadakis <papadakiss.giorgiss@gmail.com>, "Dr. Panagiotis Lionakis" <lionakispan@gmail.com>
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: networkx>=3.0
+Requires-Dist: numpy>=1.22.0
+Dynamic: license-file
+
+# enhanced-pagerankfas
