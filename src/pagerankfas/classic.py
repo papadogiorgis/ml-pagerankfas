@@ -1,8 +1,7 @@
 # src/pagerankfas/classic.py
 
 import networkx as nx
-from .utils import build_line_digraph
-from .utils import get_scc
+from .utils import build_line_digraph, get_scc
 
 def pagerankfas(graph: nx.DiGraph) -> list:
     """
@@ -27,21 +26,24 @@ def pagerankfas(graph: nx.DiGraph) -> list:
             if N == 0:
                 continue
             
+            #i precalculate out-degrees and successors to avoid
+            #doing this inside the 5-iteration loop
+            out_degrees = dict(LG.out_degree())
+            successors = {n: list(LG.successors(n)) for n in LG.nodes}
+            
             #run the pagerank algorithm for 5 iterations with
             #no damping factor (alpha=1.0)
-            #pagerank_scores = nx.pagerank(LG, alpha=1.0, max_iter=5)
             pagerank_scores = {node: 1.0 / N for node in LG.nodes}
             for _ in range(5):
                 next_scores = {node: 0.0 for node in LG.nodes}
                 for node in LG.nodes:
-                    out_edges = list(LG.out_edges(node))
-                    out_degree = len(out_edges)
+                    deg = out_degrees[node]
                     
-                    if out_degree>0:
+                    if deg>0:
                         #distribute the current score equally
                         #to all out-neighbors
-                        share = pagerank_scores[node] / out_degree
-                        for _, target in out_edges:
+                        share = pagerank_scores[node] / deg
+                        for target in successors[node]:
                             next_scores[target] += share
                     else:
                         #handling sinks
