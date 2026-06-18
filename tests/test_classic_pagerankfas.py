@@ -6,6 +6,8 @@ import networkx as nx
 import os
 
 class TestClassicPageRankFAS(unittest.TestCase):
+    # the first 2 test take about 0.002 seconds to run
+    # python -m unittest -k test_simple_cycle -k test_already_dag
     def test_simple_cycle(self):
         """
         Test that the algorithm breaks a simple 3 node cycle.
@@ -39,8 +41,22 @@ class TestClassicPageRankFAS(unittest.TestCase):
         
         #it should return an empty list since there are no cycles
         self.assertEqual(len(fas), 0)
+    
+    def test_random_graph(self):
+        """
+        Test on a small random directed graph.
+        """
+        #create a random directed graph with 200 nodes
+        #it takes about 100 seconds
+        # python -m unittest -k test_random_graph
+        G = nx.gnp_random_graph(200, 0.1, directed=True, seed=42)
+        if not nx.is_directed_acyclic_graph(G):
+            fas = pfas.pagerankfas(G)
+            G.remove_edges_from(fas)
+            self.assertTrue(nx.is_directed_acyclic_graph(G))
         
     def test_cit_hepph(self):
+        #THIS TAKES FOREVER TO RUN, HAVENT COMPLETED IT YET
         """
         Loads the cit-HepPh dataset, verifies it contains cycles, runs
         pagerankfas, and it validates that the remaining graph is dag.
