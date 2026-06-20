@@ -88,7 +88,8 @@ class TestClassicPageRankFAS(unittest.TestCase):
             return
         
         print("3. Running PageRankFAS algorithm...")
-        fas = pfas.pagerankfas(G)
+        #enable the heartbeat prints for this massive graph
+        fas = pfas.pagerankfas(G, show_prints=True)
         print(f"--> Algorithm identified {len(fas)} edges to remove!")
         
         print("4. Removing Feedback Arc Set edges from the graph...")
