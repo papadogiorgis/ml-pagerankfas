@@ -19,7 +19,7 @@ class TestClassicPageRankFAS(unittest.TestCase):
         self.assertFalse(nx.is_directed_acyclic_graph(G))
         
         #then i run the algorithm and take the fas list
-        fas = pfas.pagerankfas(G)
+        fas = pfas.pagerankfas(G, show_prints=True)
         
         #the fas list should have exactly 1 edge to break the cycle
         self.assertEqual(len(fas), 1)
@@ -37,7 +37,7 @@ class TestClassicPageRankFAS(unittest.TestCase):
         G.add_edges_from([(1,2), (2,3), (1,3)])
         
         #i run the algorithm and take the fas list
-        fas = pfas.pagerankfas(G)
+        fas = pfas.pagerankfas(G, show_prints=True)
         
         #it should return an empty list since there are no cycles
         self.assertEqual(len(fas), 0)
@@ -51,12 +51,13 @@ class TestClassicPageRankFAS(unittest.TestCase):
         # python -m unittest -k test_random_graph
         G = nx.gnp_random_graph(200, 0.1, directed=True, seed=42)
         if not nx.is_directed_acyclic_graph(G):
-            fas = pfas.pagerankfas(G)
+            fas = pfas.pagerankfas(G, show_prints=True)
             G.remove_edges_from(fas)
             self.assertTrue(nx.is_directed_acyclic_graph(G))
         
     def test_cit_hepph(self):
-        #THIS TAKES FOREVER TO RUN, HAVENT COMPLETED IT YET
+        #takes about 6 minutes to run
+        # python -m unittest -k test_cit_hepph
         """
         Loads the cit-HepPh dataset, verifies it contains cycles, runs
         pagerankfas, and it validates that the remaining graph is dag.
