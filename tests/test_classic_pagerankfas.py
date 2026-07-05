@@ -104,6 +104,61 @@ class TestClassicPageRankFAS(unittest.TestCase):
             print("\nSUCCESS: The graph has been completely broken out of its cycles.")
         else:
             print("\nFAILURE: Cycles still remain in the graph.")
+    
+    def test_benchmark_edges_file(self):
+        """
+        Loads a download benchmark .edges file, ensures it contains cycles,
+        runs pagerankfas, and validates that the remaining graph is a DAG.
+        """
+        #get the directory where this file lives
+        currdir = os.path.dirname(os.path.abspath(__file__))
+        #find the file path
+        filenames = ["erdos_renyi_n_100_c_7_seed_94.edges", "erdos_renyi_n_95_c_7_seed_68.edges", "erdos_renyi_n_100_c_7_seed_3.edges", "erdos_renyi_n_100_c_7_seed_57.edges",
+                     "erdos_renyi_n_95_c_7_seed_87.edges", "erdos_renyi_n_95_c_7_seed_82.edges", "erdos_renyi_n_100_c_7_seed_96.edges", "erdos_renyi_n_100_c_7_seed_17.edges",
+                     "erdos_renyi_n_95_c_7_seed_98.edges", "erdos_renyi_n_100_c_7_seed_87.edges", "erdos_renyi_n_100_c_7_seed_32.edges", "erdos_renyi_n_75_c_9_seed_53.edges",
+                     "erdos_renyi_n_75_c_9_seed_3.edges", "erdos_renyi_n_100_c_7_seed_44.edges", "erdos_renyi_n_90_c_7_seed_73.edges", "erdos_renyi_n_100_c_7_seed_98.edges",
+                     "erdos_renyi_n_100_c_7_seed_43.edges", "erdos_renyi_n_75_c_9_seed_63.edges", "erdos_renyi_n_95_c_7_seed_40.edges", "erdos_renyi_n_75_c_9_seed_57.edges",
+                     "tournament_n_34_seed_78.edges", "tournament_n_34_seed_75.edges", "tournament_n_34_seed_48.edges", "tournament_n_34_seed_94.edges",
+                     "tournament_n_33_seed_86.edges", "tournament_n_33_seed_39.edges", "tournament_n_34_seed_67.edges", "tournament_n_32_seed_18.edges",
+                     "tournament_n_34_seed_58.edges", "tournament_n_34_seed_31.edges", "tournament_n_34_seed_69.edges", "tournament_n_34_seed_24.edges",
+                     "tournament_n_34_seed_43.edges", "tournament_n_34_seed_87.edges", "tournament_n_34_seed_83.edges", "tournament_n_34_seed_11.edges",
+                     "tournament_n_33_seed_95.edges", "tournament_n_33_seed_64.edges", "tournament_n_33_seed_73.edges", "tournament_n_34_seed_68.edges"]
+
+        correct_pagerankfas = [167, 180, 189, 201, 189, 188, 204, 185, 182, 199, 184, 208, 217, 191, 181, 186, 201, 211, 188, 221,
+                               211, 198, 204, 201, 189, 187, 200, 175, 194, 196, 197, 197, 194, 206, 192, 201, 182, 178, 184, 201]
+        
+        for i in range(40):
+            file_path= os.path.normpath(os.path.join(currdir,"..","temp","baharev",filenames[i]))
+            #create_using=nx.DiGraph ensures its directed
+            G = nx.DiGraph()
+        
+            #open .edges file
+            with open(file_path, "r") as f:
+                for line in f:
+                    line = line.strip()
+                    #skip empty lines or comment lines
+                    if not line or line.startswith("#"):
+                        continue
+                    #split line by whitespace
+                    parts = line.split()
+                    if len(parts) >= 2:
+                        u, v = int(parts[0]), int(parts[1])
+                        G.add_edge(u,v)
+                        
+            fas = pfas.pagerankfas(G)
+            if len(fas) == correct_pagerankfas[i]:
+                dif = "(CORRECT)"
+            else:
+                if len(fas)>correct_pagerankfas[i]:
+                    dif = f"(+{len(fas)-correct_pagerankfas[i]})"
+                else:
+                    dif = f"({len(fas)-correct_pagerankfas[i]})"
+            print(f"{i+1}. {filenames[i]}: {len(fas)} {dif}")
+            G.remove_edges_from(fas)
+            is_final_dag = nx.is_directed_acyclic_graph(G)
+            
+            if not is_final_dag:
+                print("\nFAILURE: Cycles still remain in the graph.")
         
 if __name__ == '__main__':
     unittest.main()
