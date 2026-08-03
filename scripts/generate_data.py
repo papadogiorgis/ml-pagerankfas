@@ -66,9 +66,9 @@ def generate_dataset(num_graphs: int = 3000, output_csv: str = "training_data.cs
     print(f"Starting data generation for {num_graphs} graphs...")
 
     for i in range(num_graphs):
-        # Randomize size (e.g., 50 to 300 nodes) and density (e.g., 15% to 25%)
+        # Randomize size (e.g., 50 to 300 nodes) and density (e.g., 10% to 25%)
         n = random.randint(50, 300)
-        p = random.uniform(0.15, 0.25)
+        p = random.uniform(0.1, 0.25)
         G = nx.gnp_random_graph(n=n, p=p, directed=True)
         
         # Strip self-loops immediately to match classic.py initialization
