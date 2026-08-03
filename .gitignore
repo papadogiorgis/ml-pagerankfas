@@ -2,3 +2,4 @@ temp/
 **/__pycache__/
 *.egg-info/
 .eggs/
+tests/datasets/

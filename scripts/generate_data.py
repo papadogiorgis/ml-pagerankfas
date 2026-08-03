@@ -56,7 +56,7 @@ def get_top_k_edges(G: nx.DiGraph, k: int = 10) -> list:
     sorted_edges = sorted(edge_scores.items(), key=lambda x: x[1], reverse=True)
     return sorted_edges[:k]
 
-def generate_dataset(num_graphs: int = 50, output_csv: str = "training_data.csv"):
+def generate_dataset(num_graphs: int = 3000, output_csv: str = "training_data.csv"):
     """
     Generates random directed graphs, extracts the Top-10 edges, tests the 45 pairs,
     extracts their features, and writes the results to a CSV.
@@ -66,9 +66,10 @@ def generate_dataset(num_graphs: int = 50, output_csv: str = "training_data.csv"
     print(f"Starting data generation for {num_graphs} graphs...")
 
     for i in range(num_graphs):
-        # Generate a random directed graph (e.g., 50 nodes, 15% edge probability)
-        # These parameters can be tuned based on your thesis requirements
-        G = nx.gnp_random_graph(n=50, p=0.15, directed=True)
+        # Randomize size (e.g., 50 to 300 nodes) and density (e.g., 15% to 25%)
+        n = random.randint(50, 300)
+        p = random.uniform(0.15, 0.25)
+        G = nx.gnp_random_graph(n=n, p=p, directed=True)
         
         # Strip self-loops immediately to match classic.py initialization
         G.remove_edges_from(list(nx.selfloop_edges(G)))
@@ -130,4 +131,4 @@ def generate_dataset(num_graphs: int = 50, output_csv: str = "training_data.csv"
     print(df["label"].value_counts(normalize=True).mul(100).round(2).astype(str) + "%")
 
 if __name__ == "__main__":
-    generate_dataset(num_graphs=50, output_csv="training_data.csv")
+    generate_dataset(num_graphs=1, output_csv="tests/datasets/training_data.csv")
