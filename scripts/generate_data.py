@@ -3,6 +3,7 @@
 import os
 import sys
 import random
+import time
 import networkx as nx
 import pandas as pd
 from itertools import combinations
@@ -66,9 +67,10 @@ def generate_dataset(num_graphs: int = 3000, output_csv: str = "training_data.cs
     print(f"Starting data generation for {num_graphs} graphs...")
 
     for i in range(num_graphs):
-        # Randomize size (e.g., 50 to 300 nodes) and density (e.g., 10% to 25%)
-        n = random.randint(50, 300)
-        p = random.uniform(0.1, 0.25)
+        graph_start_time = time.time()
+        # Randomize size (e.g., 50 to 150 nodes) and density (e.g., 5% to 20%)
+        n = random.randint(50, 150)
+        p = random.uniform(0.05, 0.2)
         G = nx.gnp_random_graph(n=n, p=p, directed=True)
         
         # Strip self-loops immediately to match classic.py initialization
@@ -78,20 +80,26 @@ def generate_dataset(num_graphs: int = 3000, output_csv: str = "training_data.cs
             continue
 
         # 1. Establish the Baseline FAS size
+        print(f"\n--- Graph {i+1}/{num_graphs} (Nodes: {n}, Edges: {G.number_of_edges()}, Density: {(p*100):.2f}%) ---")
+        print("Calculating baseline FAS...")
         baseline_fas = pagerankfas(G, show_prints=False)
         baseline_size = len(baseline_fas)
+        print(f"Baseline FAS size: {baseline_size}")
 
         # 2. Get the Top-10 candidate edges and their scores
         top_10 = get_top_k_edges(G, k=10)
         
         # If the graph doesn't have at least 2 edges in cycles, skip
         if len(top_10) < 2:
+            print("Not enough cycle edges, skipping.")
             continue
         
         # 3. Generate the 45 unique pairs from the Top-10 edges
         pairs = list(combinations(top_10, 2))
+        print(f"Testing {len(pairs)} pairs...")
+        safe = 0
         
-        for (edge_1, pr_1), (edge_2, pr_2) in pairs:
+        for pair_idx, ((edge_1, pr_1), (edge_2, pr_2)) in enumerate(pairs, 1):
             # Ensure edge_A is always the one with the higher PageRank score
             if pr_1 >= pr_2:
                 edge_A, pr_A = edge_1, pr_1
@@ -116,10 +124,17 @@ def generate_dataset(num_graphs: int = 3000, output_csv: str = "training_data.cs
             # Label = 1 (Conflict) if the FAS size inflated. Label = 0 (Safe) otherwise.
             label = 1 if test_fas_size > baseline_size else 0
             features["label"] = label
+            if label==0:
+                safe+=1
             
             dataset.append(features)
+            
+            # Print progress every 15 pairs to prove it isn't stuck
+            if pair_idx % 15 == 0 or pair_idx == len(pairs):
+                print(f"  Processed {pair_idx}/{len(pairs)} pairs...")
 
-        print(f"Graph {i+1}/{num_graphs} processed. (Baseline FAS: {baseline_size})")
+        graph_duration = time.time() - graph_start_time
+        print(f"Graph {i+1} completed in {graph_duration:.2f} seconds. [SAFE = {safe}/45 ({((safe/45)*100):.2f}%)]")
 
     # Save to CSV
     df = pd.DataFrame(dataset)
