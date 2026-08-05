@@ -4,9 +4,11 @@ import os
 import sys
 import random
 import time
+import multiprocessing
 import networkx as nx
 import pandas as pd
 from itertools import combinations
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 # Ensure the src directory is in the Python path so imports work correctly
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
@@ -57,91 +59,109 @@ def get_top_k_edges(G: nx.DiGraph, k: int = 10) -> list:
     sorted_edges = sorted(edge_scores.items(), key=lambda x: x[1], reverse=True)
     return sorted_edges[:k]
 
-def generate_dataset(num_graphs: int = 3000, output_csv: str = "training_data.csv"):
+def process_single_graph(i, num_graphs, global_start_time):
     """
-    Generates random directed graphs, extracts the Top-10 edges, tests the 45 pairs,
-    extracts their features, and writes the results to a CSV.
+    Worker function that handles the generation and processing of a single graph.
     """
-    dataset = []
+    random.seed()
+    graph_start_time = time.time()
     
-    print(f"Starting data generation for {num_graphs} graphs...")
+    # Extract the core/process number from the multiprocessing process name
+    process_name = multiprocessing.current_process().name
+    core_id = ''.join(filter(str.isdigit, process_name))
+    if not core_id:
+        core_id = str(os.getpid())
 
-    for i in range(num_graphs):
-        graph_start_time = time.time()
-        # Randomize size (e.g., 50 to 150 nodes) and density (e.g., 5% to 20%)
-        n = random.randint(50, 150)
-        p = random.uniform(0.05, 0.2)
-        G = nx.gnp_random_graph(n=n, p=p, directed=True)
-        
-        # Strip self-loops immediately to match classic.py initialization
-        G.remove_edges_from(list(nx.selfloop_edges(G)))
-        
-        if nx.is_directed_acyclic_graph(G):
-            continue
+    # Print start timestamp
+    current_t = time.time() - global_start_time
+    print(f"{current_t:.2f}: [Core {core_id} starts processing Graph {i+1}]", flush=True)
+    
+    n = random.randint(30, 100)
+    p = random.uniform(0.05, 0.15)
+    G = nx.gnp_random_graph(n=n, p=p, directed=True)
+    G.remove_edges_from(list(nx.selfloop_edges(G)))
+    
+    # Handle skipped graphs early, returning empty datasets
+    if nx.is_directed_acyclic_graph(G):
+        return (i, [], 0, core_id, time.time() - graph_start_time)
 
-        # 1. Establish the Baseline FAS size
-        print(f"\n--- Graph {i+1}/{num_graphs} (Nodes: {n}, Edges: {G.number_of_edges()}, Density: {(p*100):.2f}%) ---")
-        print("Calculating baseline FAS...")
-        baseline_fas = pagerankfas(G, show_prints=False)
-        baseline_size = len(baseline_fas)
-        print(f"Baseline FAS size: {baseline_size}")
+    baseline_fas = pagerankfas(G, show_prints=False)
+    baseline_size = len(baseline_fas)
+    
+    top_10 = get_top_k_edges(G, k=10)
+    
+    if len(top_10) < 2:
+        return (i, [], 0, core_id, time.time() - graph_start_time)
+    
+    pairs = list(combinations(top_10, 2))
+    safe = 0
+    graph_dataset = []
+    
+    for pair_idx, ((edge_1, pr_1), (edge_2, pr_2)) in enumerate(pairs, 1):
+        if pr_1 >= pr_2:
+            edge_A, pr_A = edge_1, pr_1
+            edge_B, pr_B = edge_2, pr_2
+        else:
+            edge_A, pr_A = edge_2, pr_2
+            edge_B, pr_B = edge_1, pr_1
 
-        # 2. Get the Top-10 candidate edges and their scores
-        top_10 = get_top_k_edges(G, k=10)
-        
-        # If the graph doesn't have at least 2 edges in cycles, skip
-        if len(top_10) < 2:
-            print("Not enough cycle edges, skipping.")
-            continue
-        
-        # 3. Generate the 45 unique pairs from the Top-10 edges
-        pairs = list(combinations(top_10, 2))
-        print(f"Testing {len(pairs)} pairs...")
-        safe = 0
-        
-        for pair_idx, ((edge_1, pr_1), (edge_2, pr_2)) in enumerate(pairs, 1):
-            # Ensure edge_A is always the one with the higher PageRank score
-            if pr_1 >= pr_2:
-                edge_A, pr_A = edge_1, pr_1
-                edge_B, pr_B = edge_2, pr_2
-            else:
-                edge_A, pr_A = edge_2, pr_2
-                edge_B, pr_B = edge_1, pr_1
+        features = get_pairwise_features(G, edge_A, edge_B, pr_A, pr_B)
 
-            # 4. Extract ML Features
-            features = get_pairwise_features(G, edge_A, edge_B, pr_A, pr_B)
-
-            # 5. Determine Ground Truth Label
-            # Create a test graph, remove both edges, and run to completion
-            G_test = G.copy()
-            G_test.remove_edge(*edge_A)
-            G_test.remove_edge(*edge_B)
+        G_test = G.copy()
+        G_test.remove_edge(*edge_A)
+        G_test.remove_edge(*edge_B)
+        
+        test_fas_size = 2 + len(pagerankfas(G_test, show_prints=False))
+        
+        label = 1 if test_fas_size > baseline_size else 0
+        features["label"] = label
+        if label == 0:
+            safe += 1
             
-            # The total FAS size for this test is the 2 edges we just manually removed, 
-            # plus whatever the classic algorithm needs to remove to make the rest a DAG.
-            test_fas_size = 2 + len(pagerankfas(G_test, show_prints=False))
-            
-            # Label = 1 (Conflict) if the FAS size inflated. Label = 0 (Safe) otherwise.
-            label = 1 if test_fas_size > baseline_size else 0
-            features["label"] = label
-            if label==0:
-                safe+=1
-            
-            dataset.append(features)
-            
-            # Print progress every 15 pairs to prove it isn't stuck
-            if pair_idx % 15 == 0 or pair_idx == len(pairs):
-                print(f"  Processed {pair_idx}/{len(pairs)} pairs...")
+        graph_dataset.append(features)
 
-        graph_duration = time.time() - graph_start_time
-        print(f"Graph {i+1} completed in {graph_duration:.2f} seconds. [SAFE = {safe}/45 ({((safe/45)*100):.2f}%)]")
+    graph_duration = time.time() - graph_start_time
+    
+    # Return all the metadata so the main process can handle the final print safely
+    return (i, graph_dataset, safe, core_id, graph_duration)
 
-    # Save to CSV
+
+def generate_dataset(num_graphs: int = 3000, output_csv: str = "training_data.csv"):
+    dataset = []
+    global_start_time = time.time()
+    
+    print(f"0.00: Starting parallel data generation for {num_graphs} graphs...")
+    completed = 0
+
+    with ProcessPoolExecutor() as executor:
+        # Pass global_start_time into each worker
+        futures = {
+            executor.submit(process_single_graph, i, num_graphs, global_start_time): i 
+            for i in range(num_graphs)
+        }
+        
+        # as_completed yields tasks exactly as they finish
+        for future in as_completed(futures):
+            try:
+                i, graph_dataset, safe, core_id, graph_duration = future.result()
+                
+                if graph_dataset:
+                    dataset.extend(graph_dataset)
+                
+                completed += 1
+                t = time.time() - global_start_time
+                
+                # Print the formatted completion string
+                print(f"{t:.2f}: CORE {core_id} COMPLETED GRAPH {i+1} IN {graph_duration:.2f}s. [SAFE = {safe}/45, COMPLETED = {completed}/{num_graphs}]", flush=True)
+                
+            except Exception as e:
+                graph_num = futures[future] + 1
+                print(f"Graph {graph_num} processing failed: {e}")
+
     df = pd.DataFrame(dataset)
     df.to_csv(output_csv, index=False)
     print(f"Data generation complete. Saved {len(df)} pairs to {output_csv}.")
     
-    # Print a quick distribution of labels
     print("Label Distribution:")
     print(df["label"].value_counts(normalize=True).mul(100).round(2).astype(str) + "%")
 
