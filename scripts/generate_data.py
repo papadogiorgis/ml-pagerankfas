@@ -132,6 +132,7 @@ def generate_dataset(num_graphs: int = 3000, output_csv: str = "training_data.cs
     
     print(f"0.00: Starting parallel data generation for {num_graphs} graphs...")
     completed = 0
+    total_safe = 0
 
     with ProcessPoolExecutor() as executor:
         # Pass global_start_time into each worker
@@ -149,10 +150,14 @@ def generate_dataset(num_graphs: int = 3000, output_csv: str = "training_data.cs
                     dataset.extend(graph_dataset)
                 
                 completed += 1
+                total_safe += safe
                 t = time.time() - global_start_time
+                left = ((num_graphs * t) / completed ) - t
                 
                 # Print the formatted completion string
-                print(f"{t:.2f}: CORE {core_id} COMPLETED GRAPH {i+1} IN {graph_duration:.2f}s. [SAFE = {safe}/45, COMPLETED = {completed}/{num_graphs}]", flush=True)
+                print(f"{t:.2f}: CORE {core_id} COMPLETED GRAPH {i+1} IN {graph_duration:.2f}s. [SAFE = {safe}/45, COMPLETED = {completed}/{num_graphs}]", flush=True, end=" ")
+                print(f"[SAFE = {((safe*100)/45):.2f}% | TOTAL SAFE = {((total_safe*100)/(45*completed)):.2f}%]", end=" ")
+                print(f"{left:.1f} seconds left ({(left / 3600):.1f} hours)")
                 
             except Exception as e:
                 graph_num = futures[future] + 1
