@@ -3,3 +3,4 @@ temp/
 *.egg-info/
 .eggs/
 tests/datasets/
+*.pkl
