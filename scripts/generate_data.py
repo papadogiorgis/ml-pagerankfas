@@ -171,4 +171,8 @@ def generate_dataset(num_graphs: int = 3000, output_csv: str = "training_data.cs
     print(df["label"].value_counts(normalize=True).mul(100).round(2).astype(str) + "%")
 
 if __name__ == "__main__":
-    generate_dataset(num_graphs=3000, output_csv="tests/datasets/training_data.csv")
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    output_dir = os.path.join(current_dir, "datasets")
+    os.makedirs(output_dir, exist_ok=True)
+    csv_path = os.path.join(output_dir, "training_data.csv")
+    generate_dataset(num_graphs=3000, output_csv=csv_path)

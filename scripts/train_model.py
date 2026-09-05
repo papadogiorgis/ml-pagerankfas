@@ -25,7 +25,7 @@ def train_and_evaluate():
     # ---------------------------------------------------------
     # Ensure relative paths work regardless of where the script is executed from
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    data_path = os.path.join(base_dir, 'tests', 'datasets', 'training_data.csv')
+    data_path = os.path.join(base_dir, 'scripts', 'datasets', 'training_data.csv')
     model_dir = os.path.join(base_dir, 'src', 'pagerankfas', 'ml_enhanced')
     model_path = os.path.join(model_dir, 'rf_model.pkl')
 

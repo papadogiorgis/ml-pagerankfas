@@ -1,7 +1,12 @@
-temp/
 **/__pycache__/
 *.egg-info/
 .eggs/
-tests/datasets/
 *.pkl
 *.txt
+*.cycles
+*.edges
+*.lp
+*.mfes
+*.mst
+*.csv
+archive/
