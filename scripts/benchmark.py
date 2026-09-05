@@ -21,7 +21,7 @@ def run_benchmarks(num_graphs: int = 10, threshold: float = 0.30, batch_size: in
     print(f"  PHASE 4 BENCHMARKING: CLASSIC vs. ML-BATCHING (Threshold: {threshold})")
     print("=" * 75)
     
-    # We use a fixed seed so your benchmark results are reproducible for your report
+    # We use a fixed seed so your benchmark results are reproducible for the report
     random.seed(42)
     
     total_speedup = 0.0

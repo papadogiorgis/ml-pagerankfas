@@ -4,3 +4,4 @@ temp/
 .eggs/
 tests/datasets/
 *.pkl
+*.txt
