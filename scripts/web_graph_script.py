@@ -23,7 +23,8 @@ def main():
     
     # Define dataset path
     # dataset_path = Path(__file__).resolve().parent / "datasets" / "web-Google.txt.gz"
-    dataset_path = Path(__file__).resolve().parent / "datasets" / "web-NotreDame.txt.gz"
+    # dataset_path = Path(__file__).resolve().parent / "datasets" / "web-NotreDame.txt.gz"
+    dataset_path = Path(__file__).resolve().parent / "datasets" / "p2p-Gnutella30.txt.gz"
     
     if not dataset_path.exists():
         print(f"Error: Dataset not found at {dataset_path}")
@@ -71,3 +72,6 @@ def main():
     print(f"Classic Time:  {classic_time:.4f}s")
     print(f"Batching Time: {batching_time:.4f}s")
     print(f"Time Multiplier (Batching / Classic): {time_mult:.4f}x")
+    
+if __name__ == '__main__':
+    main()
