@@ -1,0 +1,43 @@
+scripts\benchmark_CSVs\benchmark_results_debruijn_0p0_to_1p0.csv: LOWEST FAS:0.75, LOWEST TIME:0.95
+scripts\benchmark_CSVs\benchmark_results_imaseitoh_0p0_to_1p0.csv: LOWEST FAS:0.8, LOWEST TIME:1.0
+scripts\benchmark_CSVs\benchmark_results_tournament_0p0_to_1p0.csv: LOWEST FAS: 0.6 , LOWEST TIME:0.7
+scripts\benchmark_CSVs\benchmark_results_erdosrenyi_0p0_to_1p0.csv: LOWEST FAS: 0.6 , LOWEST TIME:0.9
+
+---
+p2p-Gnutella30
+https://snap.stanford.edu/data/p2p-Gnutella30.html
+Dataset statistics
+Nodes	36682
+Edges	88328
+Nodes in largest WCC	36646 (0.999)
+Edges in largest WCC	88303 (1.000)
+Nodes in largest SCC	8490 (0.231)
+Edges in largest SCC	31706 (0.359)
+Average clustering coefficient	0.0063
+Number of triangles	1590
+Fraction of closed triangles	0.001727
+Diameter (longest shortest path)	10
+90-percentile effective diameter	6.6
+
+Classic Size: 2611
+Classic Time: 1446.5218 sec
+(threshold 0.7)
+Batching Size: 2899
+Batching Time: 301.6713 sec
+Size Multiplier (Batching / Classic): 1.1103x
+Size Multiplier (Batching / Classic): 0.2085x
+(threshold 0.8)
+Batching Size: 3000
+Batching Time: 196.4344 sec
+Size Multiplier (Batching / Classic): 1.149x
+Size Multiplier (Batching / Classic): 0.1358x
+(threshold 0.65)
+Batching Size: 2943
+Batching Time: 378.0883 sec
+Size Multiplier (Batching / Classic): 1.1272x
+Size Multiplier (Batching / Classic): 0.2614x
+(threshold 0.75)
+Batching Size: 2979
+Batching Time: 222.7852 sec
+Size Multiplier (Batching / Classic): 1.1409x
+Size Multiplier (Batching / Classic): 0.154x

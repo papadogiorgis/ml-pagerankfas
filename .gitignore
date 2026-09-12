@@ -10,4 +10,8 @@
 *.mst
 archive/
 *.gz
-/scripts/datasets/
+*.csv
+*.png
+!/scripts/benchmarks/*.txt
+!/scripts/benchmarks/*.csv
+!/scripts/benchmarks/*.png
