@@ -10,3 +10,5 @@
 *.mst
 *.csv
 archive/
+*.png
+*.gz
