@@ -37,26 +37,26 @@ def main():
     print(f"Graph loaded in {time.time() - load_start:.2f} seconds.")
     print(f"Graph Stats: {G.number_of_nodes():,} nodes | {G.number_of_edges():,} edges")
 
-    # Run Classic PageRankFAS
-    print("\n[1/2] Running Classic PageRankFAS...")
-    start_t = time.time()
-    classic_fas = pagerankfas(G, show_prints=True)
-    classic_time = time.time() - start_t
-    classic_size = len(classic_fas)
-    
-    print(f"  -> Classic FAS Size: {classic_size:,}")
-    print(f"  -> Classic Time:     {classic_time:.4f} seconds")
-
-    # Run ML-Batching PageRankFAS
+    # Run ML-Batching PageRankFAS first
     threshold = 0.7
-    print(f"\n[2/2] Running ML-Batching PageRankFAS (threshold={threshold})...")
+    print(f"\n[1/2] Running ML-Batching PageRankFAS (threshold={threshold})...")
     start_t = time.time()
-    batching_fas = pagerankfas_batching(G, threshold=threshold, show_prints=True)
+    batching_fas = pagerankfas_batching(G.copy(), threshold=threshold, show_prints=True)
     batching_time = time.time() - start_t
     batching_size = len(batching_fas)
 
     print(f"  -> Batching FAS Size: {batching_size:,}")
     print(f"  -> Batching Time:     {batching_time:.4f} seconds")
+
+    # Run Classic PageRankFAS second
+    print("\n[2/2] Running Classic PageRankFAS...")
+    start_t = time.time()
+    classic_fas = pagerankfas(G.copy(), show_prints=True)
+    classic_time = time.time() - start_t
+    classic_size = len(classic_fas)
+    
+    print(f"  -> Classic FAS Size: {classic_size:,}")
+    print(f"  -> Classic Time:     {classic_time:.4f} seconds")
 
     # Calculate Multipliers
     size_mult = calc_mult(batching_size, classic_size)
@@ -71,6 +71,3 @@ def main():
     print(f"Classic Time:  {classic_time:.4f}s")
     print(f"Batching Time: {batching_time:.4f}s")
     print(f"Time Multiplier (Batching / Classic): {time_mult:.4f}x")
-
-if __name__ == '__main__':
-    main()
