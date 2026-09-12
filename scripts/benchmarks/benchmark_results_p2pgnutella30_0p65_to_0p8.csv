@@ -1,0 +1,2 @@
+Graph_Name,Exact_FAS_Size,Classic_Size,Classic_Time_s,Batch0.0_Size,Mult_Size_0.65,Batch0.0_Time_s,Mult_Time_0.65,Batch0.05_Size,Mult_Size_0.7,Batch0.05_Time_s,Mult_Time_0.7,Batch0.1_Size,Mult_Size_0.75,Batch0.1_Time_s,Mult_Time_0.75,Batch0.15_Size,Mult_Size_0.8,Batch0.15_Time_s,Mult_Time_0.8
+RESULTS,,,,,1.1272,,0.2614,,1.1103,,0.2085,,1.1409,,0.154,,1.149,,0.1358

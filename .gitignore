@@ -8,7 +8,6 @@
 *.lp
 *.mfes
 *.mst
-*.csv
 archive/
-*.png
 *.gz
+/scripts/datasets/
