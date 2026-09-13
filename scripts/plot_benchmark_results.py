@@ -83,7 +83,7 @@ def plot_benchmark_last_row(csv_path: Path, output_image_path: Path = None):
     plt.show()
 
 if __name__ == "__main__":
-    csv_file = Path(__file__).resolve().parent / "benchmark_CSVs" / "benchmark_results_erdosrenyi_0p65_to_0p85.csv"
-    plot_file = Path(__file__).resolve().parent / "benchmark_CSVs" / "benchmark_plot_erdosrenyi_0p65_to_0p85.png"
+    csv_file = Path(__file__).resolve().parent / "benchmarks" / "benchmark_results_tournament_0p0_to_1p0.csv"
+    plot_file = Path(__file__).resolve().parent / "benchmarks" / "benchmark_results_tournament_0p0_to_1p0.png"
 
     plot_benchmark_last_row(csv_path=csv_file, output_image_path=plot_file)
