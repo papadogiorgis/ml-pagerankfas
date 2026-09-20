@@ -5,18 +5,14 @@ ml-pagerankfas/
 ├── .gitignore
 ├── LICENSE
 ├── README.md
-├── pyproject.toml
 ├── requirements.txt
 ├── src/
 │   └── pagerankfas/
-│       ├── __init__.py
 │       ├── classic.py
 │       ├── batching.py
 │       ├── ml_enhanced/
-│       │   ├── features.py
-│       │   └── __init__.py
+│       │   └── features.py
 │       └── utils/
-│           ├── __init__.py
 │           ├── scc_handler.py
 │           └── line_graph.py
 └── scripts/
