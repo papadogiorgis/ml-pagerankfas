@@ -19,7 +19,7 @@ def calc_mult(base, target):
     return base / target if target > 0 else 0.0
 
 def main():
-    print("--- Single Graph Evaluation: web-Google ---")
+    print("--- Single Graph Evaluation ---")
     
     # Define dataset path
     # dataset_path = Path(__file__).resolve().parent / "datasets" / "web-Google.txt.gz"

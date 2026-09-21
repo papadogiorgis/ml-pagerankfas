@@ -12,6 +12,6 @@ archive/
 *.gz
 *.csv
 *.png
-!/scripts/benchmarks/*.txt
-!/scripts/benchmarks/*.csv
-!/scripts/benchmarks/*.png
+!/scripts/benchmarks/baharev_dataset/*.txt
+!/scripts/benchmarks/baharev_dataset/*.csv
+!/scripts/benchmarks/baharev_dataset/*.png
