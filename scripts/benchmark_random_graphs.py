@@ -20,7 +20,7 @@ except ImportError:
 
 def calc_mult(classic_val, batching_val):
     """Calculates multiplier (Classic / ML-Batching) avoiding division by zero."""
-    return classic_val / batching_val if batching_val > 0 else 0.0
+    return batching_val / classic_val if classic_val > 0 else 0.0
 
 def generate_plots(csv_path, output_dir):
     """Generates the requested plots using the mean values from the CSV."""
@@ -105,8 +105,8 @@ def generate_plots(csv_path, output_dir):
 def main():
     print("--- Automated Random Graph Benchmark ---")
     
-    node_sizes = [100, 200, 500] 
-    densities = [0.01, 0.05, 0.1] 
+    node_sizes = [100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000] 
+    densities = [0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.25] 
     
     runs_per_config = 3
     threshold = 0.7
