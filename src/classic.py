@@ -2,7 +2,7 @@
 
 import networkx as nx
 import time
-from .utils import build_line_digraph, get_scc
+from utils import build_line_digraph, get_scc
 
 def pagerankfas(graph: nx.DiGraph, show_prints: bool = False) -> list:
     """

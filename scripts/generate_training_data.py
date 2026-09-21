@@ -13,10 +13,9 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 # Ensure the src directory is in the Python path so imports work correctly
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
-from pagerankfas.classic import pagerankfas
-from pagerankfas.utils.scc_handler import get_scc
-from pagerankfas.utils.line_graph import build_line_digraph
-from pagerankfas.ml_enhanced.features import get_pairwise_features
+from classic import pagerankfas
+from utils import build_line_digraph, get_scc
+from features import get_pairwise_features
 
 def get_top_k_edges(G: nx.DiGraph, k: int = 10) -> list:
     """

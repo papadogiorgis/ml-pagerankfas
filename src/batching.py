@@ -8,9 +8,8 @@ import networkx as nx
 import joblib
 from networkx.algorithms.approximation import maximum_independent_set
 
-from .utils.scc_handler import get_scc
-from .utils.line_graph import build_line_digraph
-from .ml_enhanced.features import get_pairwise_features
+from utils import build_line_digraph, get_scc
+from features import get_pairwise_features
 
 def pagerankfas_batching(
     graph: nx.DiGraph, 
@@ -29,8 +28,8 @@ def pagerankfas_batching(
     
     # Resolve model path dynamically if not provided
     if model_path is None:
-        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-        model_path = os.path.join(base_dir, 'src', 'pagerankfas', 'ml_enhanced', 'rf_model.pkl')
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        model_path = os.path.join(base_dir, 'src', 'rf_model.pkl')
     
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model not found at {model_path}. Run train_model.py first.")

@@ -8,8 +8,8 @@ import networkx as nx
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
 try:
-    from pagerankfas.classic import pagerankfas
-    from pagerankfas.batching import pagerankfas_batching
+    from classic import pagerankfas
+    from batching import pagerankfas_batching
 except ImportError:
     print("Error: Could not import pagerankfas modules. Ensure this script is in the 'scripts' folder.")
     sys.exit(1)
