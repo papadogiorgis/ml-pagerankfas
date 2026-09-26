@@ -1,4 +1,4 @@
-# scripts/generate_data.py
+# scripts/generate_training_data.py
 
 import os
 import sys

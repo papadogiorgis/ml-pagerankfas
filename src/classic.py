@@ -1,4 +1,4 @@
-# src/pagerankfas/classic.py
+# src/classic.py
 
 import networkx as nx
 import time

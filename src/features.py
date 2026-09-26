@@ -1,4 +1,4 @@
-# src/pagerankfas/ml_enhanced/features.py
+# src/features.py
 
 import networkx as nx
 

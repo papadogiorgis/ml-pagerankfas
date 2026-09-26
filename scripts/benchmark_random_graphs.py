@@ -1,3 +1,5 @@
+# scripts/benchmark_random_graphs.py
+
 import os
 import sys
 import time

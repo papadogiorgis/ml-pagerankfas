@@ -1,3 +1,5 @@
+# scripts/plot_benchmark_results.py
+
 import re
 from pathlib import Path
 import pandas as pd

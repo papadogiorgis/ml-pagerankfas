@@ -1,4 +1,4 @@
-# src/pagerankfas/batching.py
+# src/batching.py
 
 import os
 import time

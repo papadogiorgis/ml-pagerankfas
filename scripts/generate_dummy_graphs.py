@@ -1,3 +1,5 @@
+# scripts/generate_dummy_graphs.py
+
 import networkx as nx
 import os
 
