@@ -228,10 +228,17 @@ When running `pagerankfas_batching`, key parameters can be configured:
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `threshold` | `float` | `0.30` | Conflict decision boundary. Lower values ($\approx 0.30$) prioritize smaller FAS sizes; higher values ($\approx 0.70$) maximize batch sizes and runtime speed. |
+| `threshold` | `float` | `0.70` | Conflict decision boundary. |
 | `batch_size` | `int` | `20` | Maximum candidate edges extracted from the line graph PageRank scores per SCC. |
 | `model_path` | `str` | `None` | Custom path to a serialized Random Forest `.pkl` model. Defaults to `src/rf_model.pkl`. |
 | `show_prints` | `bool` | `False` | Enables real-time heartbeat progress logs reporting edges removed, remaining edges, and loop execution timings. |
+
+---
+
+## Thesis & Citation
+
+This project is part of a Bachelor's Thesis at the University of Crete. For the full document, see the [Bachelor's Thesis Report](report.pdf).
+
 
 ---
 
