@@ -1,8 +1,8 @@
-# ML-PageRankFAS: Machine Learning-Accelerated Feedback Arc Set
+# ML-Batching-PageRankFAS: Machine Learning-Accelerated Feedback Arc Set
 
-ML-PageRankFAS is a graph algorithm framework designed to solve the **Feedback Arc Set (FAS)** problem on directed graphs. It builds upon the heuristic **PageRankFAS** algorithm—which iteratively identifies and removes cycle-causing edges via PageRank over directed line graphs—and accelerates it using **Machine Learning-guided Batch Edge Removal**.
+ML-Batching-PageRankFAS is a graph algorithm framework designed to solve the **Feedback Arc Set (FAS)** problem on directed graphs. It builds upon the heuristic **PageRankFAS** algorithm—which iteratively identifies and removes cycle-causing edges via PageRank over directed line graphs—and accelerates it using **Machine Learning-guided Batch Edge Removal**.
 
-By training a cost-sensitive Random Forest classifier to predict structural conflicts between candidate edges within Strongly Connected Components (SCCs), ML-PageRankFAS constructs dynamic conflict graphs and identifies safe batches via Maximum Independent Set (MIS) approximations, achieving substantial runtime speedups while maintaining near-classic FAS solution quality.
+By training a cost-sensitive Random Forest classifier to predict structural conflicts between candidate edges within Strongly Connected Components (SCCs), ML-Batching-PageRankFAS constructs dynamic conflict graphs and identifies safe batches via Maximum Independent Set (MIS) approximations, achieving substantial runtime speedups while maintaining near-classic FAS solution quality.
 
 ---
 
