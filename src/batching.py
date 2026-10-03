@@ -14,7 +14,7 @@ from features import get_pairwise_features
 def pagerankfas_batching(
     graph: nx.DiGraph, 
     model_path: str = None, 
-    threshold: float = 0.30, 
+    threshold: float = 0.70, 
     batch_size: int = 20,
     show_prints: bool = False
 ) -> list:
