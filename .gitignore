@@ -15,3 +15,4 @@ archive/
 !/scripts/benchmarks/baharev_dataset/*.txt
 !/scripts/benchmarks/baharev_dataset/*.csv
 !/scripts/benchmarks/baharev_dataset/*.png
+!/scripts/benchmarks/random_graphs/*.csv
